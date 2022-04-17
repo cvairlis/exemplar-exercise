@@ -8,19 +8,12 @@ use Tests\Unit\UnitTestCase;
 
 class FizzBuzzTestCase extends UnitTestCase
 {
+    /**
+     * Creates a new FizzBuzz object of the class and returns it.
+     */
     private function makeFizzBuzz(): FizzBuzz
     {
         return new FizzBuzz();
-    }
-
-    public function throws_exception_data_provider():array
-    {
-        return [
-            '$stop < $start' => [100, 99],
-            '$start < 0' => [-10, 10],
-            '$stop < 0' => [10, -10]
-
-        ];
     }
 
     /**
@@ -34,6 +27,33 @@ class FizzBuzzTestCase extends UnitTestCase
         $this->makeFizzBuzz()->fizzBuzz($start, $stop);
     }
 
+    /**
+     * Data provider for the `unhappy path` that throws exception due to invalid input data.
+     */
+    public function throws_exception_data_provider():array
+    {
+        return [
+            '$stop < $start' => [100, 99],
+            '$start < 0' => [-10, 10],
+            '$stop < 0' => [10, -10]
+
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider success_calculation_data_provider
+     */
+    public function it_returns_correct_string_sequence(int $start, int $stop, string $expected):void
+    {
+        $fizz_buzz = $this->makeFizzBuzz()->fizzBuzz($start, $stop);
+        $this->assertEquals($expected, $fizz_buzz);
+    }
+
+    /**
+     * Some kind of lazy (random) input data provider.
+     */
     public function success_calculation_data_provider():array
     {
         return [
@@ -61,29 +81,6 @@ class FizzBuzzTestCase extends UnitTestCase
     /**
      * @test
      *
-     * @dataProvider success_calculation_data_provider
-     */
-    public function it_returns_correct_string_sequence(int $start, int $stop, string $expected):void
-    {
-        $fizz_buzz = $this->makeFizzBuzz()->fizzBuzz($start, $stop);
-        $this->assertEquals($expected, $fizz_buzz);
-    }
-
-    public function fizz_data_provider():array
-    {
-        $array = [];
-        for ($i = 1; $i <= 100; $i++) {
-            if (!($i % 3 == 0 && $i % 5 == 0) && ($i % 3 == 0)) {
-                $array[] = [$i];
-            }
-        }
-
-        return $array;
-    }
-
-    /**
-     * @test
-     *
      * @dataProvider fizz_data_provider
      */
     public function it_returns_fizz_when_multiplies_of_three_but_not_five(int $value):void
@@ -91,11 +88,14 @@ class FizzBuzzTestCase extends UnitTestCase
         $this->assertEquals('Fizz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
     }
 
-    public function buzz_data_provider():array
+    /**
+     * Input data that must produce fizz result.
+     */
+    public function fizz_data_provider():array
     {
         $array = [];
         for ($i = 1; $i <= 100; $i++) {
-            if (!($i % 3 == 0 && $i % 5 == 0) && ($i % 5 == 0)) {
+            if (!($i % 3 == 0 && $i % 5 == 0) && ($i % 3 == 0)) {
                 $array[] = [$i];
             }
         }
@@ -113,11 +113,14 @@ class FizzBuzzTestCase extends UnitTestCase
         $this->assertEquals('Buzz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
     }
 
-    public function fizz_buzz_data_provider():array
+    /**
+     * Input data that must produce buzz result.
+     */
+    public function buzz_data_provider():array
     {
         $array = [];
         for ($i = 1; $i <= 100; $i++) {
-            if ($i % 3 == 0 && $i % 5 == 0) {
+            if (!($i % 3 == 0 && $i % 5 == 0) && ($i % 5 == 0)) {
                 $array[] = [$i];
             }
         }
@@ -128,18 +131,21 @@ class FizzBuzzTestCase extends UnitTestCase
     /**
      * @test
      *
-     * @dataProvider fizz_buzz_data_provider
+     * @dataProvider fuzz_buzz_data_provider
      */
-    public function it_returns_fizzbuzz_when_multiplies_of_three_and_five(int $value):void
+    public function it_returns_fuzzbuzz_when_multiplies_of_three_and_five(int $value):void
     {
         $this->assertEquals('FizzBuzz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
     }
 
-    public function number_data_provider():array
+    /**
+     * Input data that must produce fuzzbuzz result.
+     */
+    public function fuzz_buzz_data_provider():array
     {
         $array = [];
         for ($i = 1; $i <= 100; $i++) {
-            if (!($i % 3 == 0 && $i % 5 == 0) && !($i % 3 == 0) && !($i % 5 == 0)) {
+            if ($i % 3 == 0 && $i % 5 == 0) {
                 $array[] = [$i];
             }
         }
@@ -155,5 +161,20 @@ class FizzBuzzTestCase extends UnitTestCase
     public function it_returns_the_number_when_non_of_the_above_exist(int $value):void
     {
         $this->assertEquals($value, $this->makeFizzBuzz()->fizzBuzz($value, $value));
+    }
+
+    /**
+     * Input data that must produce number (int) result.
+     */
+    public function number_data_provider():array
+    {
+        $array = [];
+        for ($i = 1; $i <= 100; $i++) {
+            if (!($i % 3 == 0 && $i % 5 == 0) && !($i % 3 == 0) && !($i % 5 == 0)) {
+                $array[] = [$i];
+            }
+        }
+
+        return $array;
     }
 }
