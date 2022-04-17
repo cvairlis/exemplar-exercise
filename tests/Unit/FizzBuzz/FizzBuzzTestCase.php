@@ -37,11 +37,15 @@ class FizzBuzzTestCase extends UnitTestCase
     public function success_calculation_data_provider():array
     {
         return [
-            '1' => [1, 1, '1'],
-            '2' => [2, 2, '2'],
-            'Fizz3' => [3, 3, 'Fizz'],
-            'Fizz6' => [6, 6, 'Fizz'],
-            'Fizz9' => [9, 9, 'Fizz'],
+            [1, 1, '1'],
+            [2, 2, '2'],
+            [3, 3, 'Fizz'],
+            [6, 6, 'Fizz'],
+            [9, 9, 'Fizz'],
+            [5, 5, 'Buzz'],
+            [10, 10, 'Buzz'],
+            [15, 15, 'FizzBuzz'],
+            [1, 6, '12Fizz4BuzzFizz'],
         ];
     }
 
