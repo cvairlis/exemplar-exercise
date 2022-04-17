@@ -73,7 +73,7 @@ class FizzBuzzTestCase extends UnitTestCase
     {
         $array = [];
         for ($i = 1; $i <= 100; $i++) {
-            if (($i % 3 == 0) && !($i % 5 == 0)) {
+            if (!($i % 3 == 0 && $i % 5 == 0) && ($i % 3 == 0)) {
                 $array[] = [$i];
             }
         }
@@ -95,7 +95,7 @@ class FizzBuzzTestCase extends UnitTestCase
     {
         $array = [];
         for ($i = 1; $i <= 100; $i++) {
-            if (!($i % 3 == 0) && ($i % 5 == 0)) {
+            if (!($i % 3 == 0 && $i % 5 == 0) && ($i % 5 == 0)) {
                 $array[] = [$i];
             }
         }
@@ -117,7 +117,7 @@ class FizzBuzzTestCase extends UnitTestCase
     {
         $array = [];
         for ($i = 1; $i <= 100; $i++) {
-            if (($i % 3 == 0) && ($i % 5 == 0)) {
+            if ($i % 3 == 0 && $i % 5 == 0) {
                 $array[] = [$i];
             }
         }
@@ -133,5 +133,27 @@ class FizzBuzzTestCase extends UnitTestCase
     public function it_returns_fizzbuzz_when_multiplies_of_three_and_five(int $value):void
     {
         $this->assertEquals('FizzBuzz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
+    }
+
+    public function number_data_provider():array
+    {
+        $array = [];
+        for ($i = 1; $i <= 100; $i++) {
+            if (!($i % 3 == 0 && $i % 5 == 0) && !($i % 3 == 0) && !($i % 5 == 0)) {
+                $array[] = [$i];
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider number_data_provider
+     */
+    public function it_returns_the_number_when_non_of_the_above_exist(int $value):void
+    {
+        $this->assertEquals($value, $this->makeFizzBuzz()->fizzBuzz($value, $value));
     }
 }
