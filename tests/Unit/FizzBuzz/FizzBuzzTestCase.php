@@ -112,4 +112,26 @@ class FizzBuzzTestCase extends UnitTestCase
     {
         $this->assertEquals('Buzz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
     }
+
+    public function fizz_buzz_data_provider():array
+    {
+        $array = [];
+        for ($i = 1; $i <= 100; $i++) {
+            if (($i % 3 == 0) && ($i % 5 == 0)) {
+                $array[] = [$i];
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider fizz_buzz_data_provider
+     */
+    public function it_returns_fizzbuzz_when_multiplies_of_three_and_five(int $value):void
+    {
+        $this->assertEquals('FizzBuzz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
+    }
 }
