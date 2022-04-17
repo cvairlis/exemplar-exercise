@@ -40,11 +40,20 @@ class FizzBuzzTestCase extends UnitTestCase
             [1, 1, '1'],
             [2, 2, '2'],
             [3, 3, 'Fizz'],
-            [6, 6, 'Fizz'],
-            [9, 9, 'Fizz'],
+            [4, 4, '4'],
             [5, 5, 'Buzz'],
+            [6, 6, 'Fizz'],
+            [7, 7, '7'],
+            [8, 8, '8'],
+            [9, 9, 'Fizz'],
             [10, 10, 'Buzz'],
+            [11, 11, '11'],
+            [12, 12, 'Fizz'],
+            [13, 13, '13'],
+            [14, 14, '14'],
             [15, 15, 'FizzBuzz'],
+            [30, 30, 'FizzBuzz'],
+            [75, 75, 'FizzBuzz'],
             [1, 6, '12Fizz4BuzzFizz'],
         ];
     }
@@ -57,6 +66,29 @@ class FizzBuzzTestCase extends UnitTestCase
     public function it_returns_correct_string_sequence(int $start, int $stop, string $expected):void
     {
         $fizz_buzz = $this->makeFizzBuzz()->fizzBuzz($start, $stop);
-        $this->assertEquals($fizz_buzz, $expected);
+        $this->assertEquals($expected, $fizz_buzz);
+    }
+
+    public function fizz_data_provider():array
+    {
+        $array = [];
+        for ($i = 1; $i <= 100; $i++) {
+            if (($i % 3 == 0) && !($i % 5 == 0)) {
+                $array[] = [$i];
+            }
+        }
+
+        return $array;
+
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider fizz_data_provider
+     */
+    public function it_returns_fizz_when_multiplies_of_three_but_not_five(int $value):void
+    {
+        $this->assertEquals('Fizz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
     }
 }
