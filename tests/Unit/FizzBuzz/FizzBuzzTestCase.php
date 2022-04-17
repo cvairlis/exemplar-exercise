@@ -79,7 +79,6 @@ class FizzBuzzTestCase extends UnitTestCase
         }
 
         return $array;
-
     }
 
     /**
@@ -90,5 +89,27 @@ class FizzBuzzTestCase extends UnitTestCase
     public function it_returns_fizz_when_multiplies_of_three_but_not_five(int $value):void
     {
         $this->assertEquals('Fizz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
+    }
+
+    public function buzz_data_provider():array
+    {
+        $array = [];
+        for ($i = 1; $i <= 100; $i++) {
+            if (!($i % 3 == 0) && ($i % 5 == 0)) {
+                $array[] = [$i];
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider buzz_data_provider
+     */
+    public function it_returns_buzz_when_multiplies_of_five_but_not_three(int $value):void
+    {
+        $this->assertEquals('Buzz', $this->makeFizzBuzz()->fizzBuzz($value, $value));
     }
 }
