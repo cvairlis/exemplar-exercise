@@ -62,6 +62,8 @@ Error essentially occurs because the table is a `largeTable`.
 Since it is a large data migration, I would rather go working with chunks.
 
 ## Question 4
+Excercise asks to implement a `function`.
+So with a single function this is what I would implement.
 ```php
 <?php
 
