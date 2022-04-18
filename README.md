@@ -62,9 +62,36 @@ Error essentially occurs because the table is a `largeTable`.
 Since it is a large data migration, I would rather go working with chunks.
 
 ## Question 4
-Write a function that takes a phone number in any form and formats it using a delimiter supplied by the developer. The delimiter is optional; if one is not supplied, use a dash (-). Your function should accept a phone number in any format (e.g. 123-456-7890, (123) 456-7890, 1234567890, etc) and format it according to the 3-3-4 US block standard, using the delimiter specified. Assume foreign phone numbers and country codes are out of scope.
+```php
+<?php
 
-*Note:* This question CAN be solved using a regular expression, but one is not REQUIRED as a solution. Focus instead on cleanliness and effectiveness of the code, and take into account phone numbers that may not pass a sanity check.
+/**
+ * Takes a phone number in any form and formats it
+ * according to the 3-3-4 US block standard `(XXX)- XXX - XXXX`,
+ * using the delimiter specified.
+ *
+ * Assumes foreign phone numbers and country codes are out of scope.
+ *
+ * @param mixed $phone_number
+ * @param string $delimiter
+ *
+ * @throws \InvalidArgumentException
+ * @throws \Exception
+ */
+public function format($phone_number, string $delimiter = '-'): string
+{
+    // get only digits
+    $sanitized_input = filter_var($phone_number, FILTER_SANITIZE_NUMBER_INT);
+    $integers_only = preg_replace('/[^0-9]/', '', $sanitized_input);
+
+    return implode($delimiter, [
+        substr($integers_only, 0, 3),
+        substr($integers_only, 3, 3),
+        substr($integers_only, 6, 4),
+    ]);
+}
+```
+
 
 ## Question 5
 ```php
