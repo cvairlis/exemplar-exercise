@@ -67,9 +67,239 @@ Write a function that takes a phone number in any form and formats it using a de
 *Note:* This question CAN be solved using a regular expression, but one is not REQUIRED as a solution. Focus instead on cleanliness and effectiveness of the code, and take into account phone numbers that may not pass a sanity check.
 
 ## Question 5
-In production, we'll be caching to memcache. On staging, we'll be caching to APC. In development, we won't be caching at all. Design a library that allows you to store and retrieve data from the cache (only two methods required) and fits the requirements of all three environments. Consider making use of anything appropriate (e.g. traits, classes, interfaces, abstract classes, closures, etc) to solve this problem.
+```php
+<?php
 
-Note: This is an architecture question. Please focus on the design of your library, rather than implementation or the specific caches I've described.
+namespace ExemplarCode\Cache\Contracts;
+
+interface CacheInterface
+{
+    /**
+     * Fetches a value from the cache.
+     *
+     * @param string $key     The unique key of this item in the cache.
+     * @param mixed  $default Default value to return if the key does not exist.
+     *
+     * @return mixed The value of the item from the cache, or $default in case of cache miss.
+     *
+     * @throws \InvalidArgumentException
+     *   MUST be thrown if the $key string is not a legal value.
+     */
+    public function get($key, $default = null);
+
+    /**
+     * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
+     *
+     * @param string                 $key   The key of the item to store.
+     * @param mixed                  $value The value of the item to store, must be serializable.
+     * @param null|int|\DateInterval $ttl   Optional. The TTL value of this item. If no value is sent and
+     *                                      the driver supports TTL then the library may set a default value
+     *                                      for it or let the driver take care of that.
+     *
+     * @return bool True on success and false on failure.
+     *
+     * @throws \InvalidArgumentException
+     *   MUST be thrown if the $key string is not a legal value.
+     */
+    public function set($key, $value, $ttl = null): bool;
+}
+```
+
+```php
+<?php
+
+namespace ExemplarCode\Cache\Drivers;
+
+use ExemplarCode\Cache\Contracts\CacheInterface;
+
+class ApcCache implements CacheInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function get($key, $default = null)
+    {
+        // TODO: Implement get() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function set($key, $value, $ttl = null): bool
+    {
+        // TODO: Implement get() method.
+
+        return false;
+    }
+}
+```
+```php
+<?php
+
+namespace ExemplarCode\Cache\Drivers;
+
+use ExemplarCode\Cache\Contracts\CacheInterface;
+
+class RedisCache implements CacheInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function get($key, $default = null)
+    {
+        // TODO: Implement get() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function set($key, $value, $ttl = null): bool
+    {
+        // TODO: Implement get() method.
+
+        return false;
+    }
+}
+```
+```php
+<?php
+
+namespace ExemplarCode\Cache\Drivers;
+
+use ExemplarCode\Cache\Contracts\CacheInterface;
+
+class SampleCache implements CacheInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function get($key, $default = null)
+    {
+        // TODO: Implement get() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function set($key, $value, $ttl = null): bool
+    {
+        // TODO: Implement get() method.
+
+        return false;
+    }
+}
+```
+```php
+<?php
+
+namespace ExemplarCode\Cache\Contracts;
+
+interface CacheFactoryInterface
+{
+    /**
+     * Instantiates the corresponding cache driver and returns it.
+     */
+    public function make(): CacheInterface;
+}
+```
+```php
+<?php
+
+namespace ExemplarCode\Cache\Factories;
+
+use ExemplarCode\Cache\Contracts\CacheFactoryInterface;
+use ExemplarCode\Cache\Contracts\CacheInterface;
+use ExemplarCode\Cache\Drivers\ApcCache;
+use ExemplarCode\Cache\Drivers\RedisCache;
+use ExemplarCode\Cache\Drivers\SampleCache;
+
+class CacheFactory implements CacheFactoryInterface
+{
+    public const CACHE_DRIVER = 'CACHE_DRIVER';
+
+    /**
+     * @inheritDoc
+     */
+    public function make(): CacheInterface
+    {
+        switch ($_ENV[self::CACHE_DRIVER]) {
+            case 'APC':
+                return new ApcCache();
+            case 'REDIS':
+                return new RedisCache();
+            default:
+                return new SampleCache();
+        }
+    }
+}
+```
+```php
+<?php
+
+namespace ExemplarCode\Cache\Concerns;
+
+trait CacheFunctionsTrait
+{
+    /**
+     * Fetches a value from the cache.
+     *
+     * @param string $key     The unique key of this item in the cache.
+     * @param mixed  $default Default value to return if the key does not exist.
+     *
+     * @return mixed The value of the item from the cache, or $default in case of cache miss.
+     *
+     * @throws \InvalidArgumentException
+     *   MUST be thrown if the $key string is not a legal value.
+     */
+    public function get($key, $default = null)
+    {
+        return $this->cache->get($key, $default);
+    }
+
+    /**
+     * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
+     *
+     * @param string                 $key   The key of the item to store.
+     * @param mixed                  $value The value of the item to store, must be serializable.
+     * @param null|int|\DateInterval $ttl   Optional. The TTL value of this item. If no value is sent and
+     *                                      the driver supports TTL then the library may set a default value
+     *                                      for it or let the driver take care of that.
+     *
+     * @return bool True on success and false on failure.
+     *
+     * @throws \InvalidArgumentException
+     *   MUST be thrown if the $key string is not a legal value.
+     */
+    public function set($key, $value, $ttl = null): bool
+    {
+        return $this->cache->set($key, $value, $ttl);
+    }
+}
+```
+```php
+<?php
+
+namespace ExemplarCode\Cache;
+
+use ExemplarCode\Cache\Concerns\CacheFunctionsTrait;
+use ExemplarCode\Cache\Contracts\CacheInterface;
+use ExemplarCode\Cache\Factories\CacheFactory;
+
+class Cache
+{
+    use CacheFunctionsTrait;
+
+    /** @var CacheInterface */
+    private $cache;
+
+    public function __construct()
+    {
+        $this->cache = (new CacheFactory())->make();
+    }
+}
+```
+
+We may use the Psr CacheInterface contracts and also use (if we have available) a Dependency Injection Container to instantiate classes using the interface rather that the actual implementation class.
 
 ## Question 6
 Complete set of unit tests for the FizzBuzz algorithm
