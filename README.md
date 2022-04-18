@@ -44,18 +44,22 @@ function binarySearch(int $needle, array $haystack): bool
 ```
 
 ## Question 3
-During a large data migration, you get the following error: Fatal error: Allowed memory size of 134217728 bytes exhausted (tried to allocate 54 bytes). You've traced the problem to the following snippet of code:
 
+### First solution:
+We could set PDO::MYSQL_ATTR_USE_BUFFERED_QUERY to false, after creating the connection.
+
+### Second solution:
 ```php
-
 $stmt = $pdo->prepare('SELECT * FROM largeTable');
 $stmt->execute();
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-foreach ($results as $result) {
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 	// manipulate the data here
 }
 ```
-Refactor this code so that it stops triggering a memory error.
+### Third solution:
+Error essentially occurs because the table is a `largeTable`.
+`fetchAll` loads all the data from the database and store them in the variable `$result`. This is why we get the error.
+Since it is a large data migration, I would rather go working with chunks.
 
 ## Question 4
 Write a function that takes a phone number in any form and formats it using a delimiter supplied by the developer. The delimiter is optional; if one is not supplied, use a dash (-). Your function should accept a phone number in any format (e.g. 123-456-7890, (123) 456-7890, 1234567890, etc) and format it according to the 3-3-4 US block standard, using the delimiter specified. Assume foreign phone numbers and country codes are out of scope.
